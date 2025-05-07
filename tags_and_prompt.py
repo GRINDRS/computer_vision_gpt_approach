@@ -1,0 +1,22 @@
+starry_night_tags = [
+    "starry-night",
+    "van-gogh",
+    "swirling-sky",
+    "yellow-stars",
+    "blue-sky",
+    "cypress-tree",
+    "village-at-night",
+    "expressionist-art",
+    "moon",
+    "blue-and-yellow-painting",
+    "famous-artwork",
+    "post-impressionism",
+    "hillside-village",
+    "painted-nightscape",
+    "dark-cypress",
+    "vibrant-colours",
+    "whirling-clouds",
+    "iconic-night-scene",
+    "yellow-moon",
+    "star-filled-sky"
+]
