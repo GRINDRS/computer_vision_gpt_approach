@@ -28,19 +28,15 @@ def resize_and_encode_image(image_path, max_size=512):
 
 def match_image_to_artwork(encoded_image, artworks):
     try:
-
         artwork_lines = "\n".join([
             f"{name}: {', '.join(tags)}"
             for name, tags in artworks.items()
         ])
 
-        system_prompt = f"""You are a smart visual analyst.
+        system_prompt = f"""You are a simple artwork classifier.
 
-You will be shown an image. First, describe it in detail, noting visual features, artistic style, material, and purpose.
-
-Then, compare it to this list of artworks and determine the best match, based on concept, style, and visual similarity.
-
-Only return the name of the matched artwork, or "nothing found" if there’s no good match.
+Compare the image to this list of artworks. If the image matches any artwork, return ONLY the artwork name.
+If the image doesn't match any artwork, return ONLY the word "wall".
 
 Artworks:
 {artwork_lines}
@@ -48,21 +44,24 @@ Artworks:
 
         print("[INFO] Sending image and matching request to OpenAI...")
         response = openai.chat.completions.create(
-            model="gpt-4o",
+            model="gpt-4-vision-preview",
             messages=[
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": [
                     {"type": "image_url", "image_url": {"url": f"data:image/jpeg;base64,{encoded_image}"}}
                 ]}
             ],
-            max_tokens=200,
+            max_tokens=50,
         )
 
-        result = response.choices[0].message.content.strip()
+        result = response.choices[0].message.content.strip().lower()
+        # If the result is not one of our known artworks, return "wall"
+        if result not in [name.lower() for name in artworks.keys()]:
+            return "wall"
         return result
     except Exception as e:
         print(f"[ERROR] OpenAI API failed: {e}")
-        return "nothing found"
+        return "wall"
 
 if __name__ == "__main__":
     artworks = {
